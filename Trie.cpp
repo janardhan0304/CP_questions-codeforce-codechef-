@@ -1,58 +1,74 @@
+#include <bits/stdc++.h>
+
 class Node {
+
 public:
-    vector<Node*> v;
-    bool end;
+    vector<pair<Node*, int>> v;
+    bool endOf;
 
     Node() {
         v.resize(26);
-        for (auto &x : v) x = NULL;
-        end = 0;
+        for (auto &x : v) {
+            x.first = NULL;
+            x.second = 0;
+        } endOf = false;
     }
-
 };
 
 
 
 class Trie {
-public:
 
+public:
     Node *root;
     Trie() {
+
         root = new Node();
     }
 
-    //insert function
-
-    void insert(string word) {
+    void insert(string &word) {
         Node *node = root;
+        // Node node=*nodePtr;
         for (auto x : word) {
-            if (node->v[x - 'a'] == NULL) {
+            if (node->v[x - 'a'].first == NULL) {
                 Node *newNode = new Node();
-                node->v[x - 'a'] = newNode;
-                //dont forget this
+                node->v[x - 'a'].first = newNode;
+                node->v[x - 'a'].second++;
                 node = newNode;
-            } else node = node->v[x - 'a'];
-        }
-        node->end = true;
+            } else {
+                node->v[x - 'a'].second++;
+                node = node->v[x - 'a'].first;
+            }
+        } node->endOf = true;
     }
 
-    //search and startsWith are almost same except the last return statement
-
-    bool search(string word) {
+    int countWordsEqualTo(string &word) {
+        int count = 0;
         Node *node = root;
         for (auto x : word) {
-            if (node->v[x - 'a'] == NULL) return false;
-            node = node->v[x - 'a'];
+            if (node->v[x - 'a'].first == NULL) return 0;
+            count = node->v[x - 'a'].second;
+            node = node->v[x - 'a'].first;
         }
-        return node->end;
+        return ((node->endOf == true) * count);
     }
 
-    bool startsWith(string prefix) {
+    int countWordsStartingWith(string &word) {
+        int count = 0;
         Node *node = root;
-        for (auto x : prefix) {
-            if (node->v[x - 'a'] == NULL) return false;
-            node = node->v[x - 'a'];
+        for (auto x : word) {
+            if (node->v[x - 'a'].first == NULL) return 0;
+            count = node->v[x - 'a'].second;
+            node = node->v[x - 'a'].first;
         }
-        return true;
+        return (count);
+    }
+
+    void erase(string &word) {
+        Node *node = root;
+        for (auto x : word) {
+            node->v[x - 'a'].second--;
+            node = node->v[x - 'a'].first;
+        }
     }
 };
