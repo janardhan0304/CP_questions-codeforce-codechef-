@@ -1,4 +1,3 @@
-#include <bits/stdc++.h>
 
 class Node {
 
@@ -57,7 +56,7 @@ public:
         int count = 0;
         Node *node = root;
         for (auto x : word) {
-            if (node->v[x - 'a'].first == NULL) return 0;
+            if (node->v[x - 'a'].first == NULL) return count;
             count = node->v[x - 'a'].second;
             node = node->v[x - 'a'].first;
         }
@@ -68,7 +67,12 @@ public:
         Node *node = root;
         for (auto x : word) {
             node->v[x - 'a'].second--;
+            Node *temp = node;
             node = node->v[x - 'a'].first;
+            if (temp->v[x - 'a'].second == 0) {
+                temp->v[x - 'a'].first = NULL;
+            }
+
         }
     }
 };
